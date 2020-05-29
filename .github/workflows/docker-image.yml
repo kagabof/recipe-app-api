@@ -1,0 +1,22 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag recipe-app-api-image-1:$(date +%s)
+    - name: Build the Docker docker-compose
+      run: docker-compose build
+    - name: Run Tests
+      run: docker-compose run --rm app sh -c "python manage.py test && flake8"
